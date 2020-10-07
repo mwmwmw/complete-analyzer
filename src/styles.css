@@ -1,0 +1,100 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#root {
+  display: flex;
+}
+canvas {
+  width: 25vw;
+  height: 100vh;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+audio,
+.overlay {
+  color: white;
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 100;
+  width: auto;
+  margin: 32px;
+}
+
+.overlay span {
+  display: block;
+}
+
+.drag-drop-zone {
+  width: 100%;
+}
+
+.ffts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.fft {
+  display: flex;
+  width: 250px;
+  height: 250px;
+  transform: rotateX(180deg);
+}
+
+.selector {
+  top: 1em;
+  left: 1em;
+  z-index: 1000;
+  display: grid;
+  gap: 1em;
+  grid-template-columns: 1fr 1fr;
+}
+
+.device-selector {
+  color: white;
+}
+
+.device-selector h3 {
+  margin: 0;
+  padding: 16px;
+  text-transform: uppercase;
+  background: rgba(19, 165, 209, 0.4);
+}
+
+.device-selector ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.device-selector li {
+  padding: 16px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.2s;
+  display: grid;
+  gap: 1em;
+  grid-template-columns: 2fr 50px;
+}
+
+.device-selector li:hover {
+  background: rgba(19, 165, 209, 0.4);
+  transition: background 0.2s;
+}
+
+.device-selector li.selected {
+  background: rgba(19, 165, 209, 0.8);
+  transition: background 0.6s;
+}
+
+.panel {
+  font-family: sans-serif;
+  font-size: 14px;
+  background: rgba(140, 140, 140, 0.6);
+  position: absolute;
+  z-index: 1000;
+}
