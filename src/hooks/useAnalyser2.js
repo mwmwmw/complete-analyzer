@@ -101,7 +101,7 @@ function multibandAnalyzer(context, bands = DEFAULT_CONFIG) {
     const comp = createCompressor(context, options.compressor);
     const fft = createFFT(context);
     const volume = new AudioWorkletNode(context, "db-fs");
-    volume.level = 0;
+    volume.level = {avg:[0,0], level:[0,0]};
     volume.port.onmessage = (e) => {
       volume.level = e.data;
     };
@@ -167,8 +167,10 @@ const mapFFT = (b) => {
 };
 
 function collectData(analyzer, fft, context) {
-  analyzer.buckets.map(({ volume }) => volume.postMessage(0));
-  const values = analyzer.buckets.map(mapCompressor);
+
+  analyzer.buckets.map(({ volume }) => volume.port.postMessage(0));
+
+  const values = analyzer.buckets.map(({volume})=>volume.level.avg[0]);
   const ffts = analyzer.buckets.map(mapFFT);
   var frequencies = new Float32Array(fft.frequencyBinCount);
   fft.getFloatFrequencyData(frequencies);
@@ -179,6 +181,8 @@ function collectData(analyzer, fft, context) {
     });
   }
 
+  
+
   var time = context.currentTime;
   currentData = {
     values,
@@ -187,6 +191,7 @@ function collectData(analyzer, fft, context) {
     deltaValues,
     ffts
   };
+
 
   return currentData;
 }

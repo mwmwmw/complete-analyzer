@@ -7,7 +7,7 @@ function getDevices() {
 }
 
 export default function useAudioInput(
-  context = useMemo(() => new AudioContext(), [])
+  context = new AudioContext()
 ) {
   const [source, setCurrentSource] = useState();
   const [devices, setDevices] = useState([]);

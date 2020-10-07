@@ -174,13 +174,13 @@ const Visualizer = () => {
         }}
       >
         <Camera />
-        <ambientLight color={sceneColor} intensity={Math.floor(high * 1000)} />
+        <ambientLight color={sceneColor} intensity={Math.floor(Math.pow(Math.exp(high),550))} />
         <pointLight
           color={sceneColor}
           position={[0, 2, 5]}
           intensity={high * low * 1000}
         />
-        <Sculpture scale={[Math.pow(mid, low * 2), mid, low]} />
+        <Sculpture scale={[Math.pow(2, low), Math.pow(2, low), Math.pow(2, low)]} />
         <Particles count={2000} mouse={mouse} />
         <Effects />
       </Canvas>
