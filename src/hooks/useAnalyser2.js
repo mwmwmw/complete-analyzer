@@ -70,7 +70,7 @@ export default function useAnalyser(
         analysisCallback(
           collectData(analyzer, fft, context, currentData, source.duration)
         );
-      }, 32);
+      }, 16.67);
     }
 
     return () => {
