@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 
+
+import VuMeter from "../Audio/VuMeter";
+
 const DEFAULT_CONFIG = [
   {
     filter: {
@@ -37,19 +40,19 @@ const DEFAULT_CONFIG = [
   }
 ];
 
-const FFT_SIZE = 128;
+const FFT_SIZE = 32;
 
 const DEFAULT_FFT = {
   fftSize: FFT_SIZE,
   smoothingTimeConstant: 0.4,
   maxDecibels: -10,
-  minDecibels: -40
+  minDecibels: -20
 };
 
 export default function useAnalyser(
   context,
   source,
-  analysisCallback = () => {},
+  analysisCallback = () => { },
   startTime = 0,
   config = DEFAULT_CONFIG
 ) {
@@ -68,7 +71,7 @@ export default function useAnalyser(
       source.connect(analyzer.input);
       interval = setInterval(() => {
         analysisCallback(
-          collectData(analyzer, fft, context, currentData, source.duration)
+          collectData(analyzer, fft, context, source.duration)
         );
       }, 16.67);
     }
@@ -93,24 +96,21 @@ function multibandAnalyzer(context, bands = DEFAULT_CONFIG) {
   const bypass = context.createGain();
   input.connect(dry);
   dry.connect(output);
-  dry.gain.setValueAtTime(0.0, context.currentTime);
+  dry.gain.setValueAtTime(1.0, context.currentTime);
   bypass.gain.setValueAtTime(0.0, context.currentTime);
   bypass.connect(output);
   const buckets = bands.map((options) => {
     const filter = createFilter(context, options.filter);
     const comp = createCompressor(context, options.compressor);
-    const fft = createFFT(context);
-    const volume = new AudioWorkletNode(context, "db-fs");
-    volume.level = {avg:[0,0], level:[0,0]};
-    volume.port.onmessage = (e) => {
-      volume.level = e.data;
-    };
+    const volume = new VuMeter(context, 16.67);
+
     input.connect(filter);
-    filter.connect(fft);
-    fft.connect(volume);
-    volume.connect(comp);
+    filter.connect(volume);
+    filter.connect(comp);
     comp.connect(bypass);
-    return { filter, comp, fft, volume };
+
+    return { filter, comp, volume };
+
   });
 
   return {
@@ -146,8 +146,6 @@ function createFilter(
 
 const minmax = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
 
-var currentData = false;
-
 const fftArray = new Array(FFT_SIZE / 2);
 const procFFT = (data, array = fftArray) => {
   for (var i = 0; i < array.length; i++) {
@@ -160,38 +158,22 @@ const mapCompressor = (b) => {
   return minmax(Math.log(Math.abs(b.comp.reduction) / 20));
 };
 
-const mapFFT = (b) => {
-  const frequencies = new Float32Array(b.fft.frequencyBinCount);
-  b.fft.getFloatFrequencyData(frequencies);
+const mapFFT = (fft) => {
+  const frequencies = new Float32Array(fft.frequencyBinCount);
+  fft.getFloatFrequencyData(frequencies);
+  console.log(frequencies)
   return procFFT(frequencies, new Array(FFT_SIZE / 2));
 };
 
-function collectData(analyzer, fft, context) {
+function collectData(analyzer, fft, context, duration) {
 
-  analyzer.buckets.map(({ volume }) => volume.port.postMessage(0));
-
-  const values = analyzer.buckets.map(({volume})=>volume.level.avg[0]);
-  const ffts = analyzer.buckets.map(mapFFT);
-  var frequencies = new Float32Array(fft.frequencyBinCount);
-  fft.getFloatFrequencyData(frequencies);
-  ffts.push(procFFT(frequencies, fftArray));
-  if (currentData) {
-    var deltaValues = values.map((v, i) => {
-      return v - currentData.values[i];
-    });
-  }
-
-  
-
-  var time = context.currentTime;
-  currentData = {
-    values,
-    frequencies,
-    time,
-    deltaValues,
-    ffts
-  };
+  const values = analyzer.buckets.map(({ volume }) => volume.volume);
+  const time = context.currentTime;
+  const extras = analyzer.buckets.map(({ volume }) => {
+    const {hit, overage, volumeDelta } = volume;
+    return {hit, overage, volumeDelta};
+  })
 
 
-  return currentData;
+  return { values, time, fft: [mapFFT(fft)] };
 }
