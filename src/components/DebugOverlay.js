@@ -48,7 +48,7 @@ export default function DebugOverlay({ active }) {
           <h2>FFT</h2>
           <div className="ffts">
             {values &&
-              values.ffts.map((arr, i) => (
+              values.fft.map((arr, i) => (
                 <FFT
                   key={"fft" + i.toString()}
                   name={"fft" + i.toString()}
