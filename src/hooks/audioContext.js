@@ -7,7 +7,8 @@ function AudioContextProvider({ children }) {
   useEffect(() => {
     async function setupVolume() {
       const context = new AudioContext();
-      await context.audioWorklet.addModule("dbfs.js");
+      //await context.audioWorklet.addModule("dbfs.js");
+      await context.audioWorklet.addModule("vumeter_worklet.js");
       setContext(context);
     }
     setupVolume();
