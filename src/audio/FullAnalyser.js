@@ -18,6 +18,7 @@ export default class FullAnalyser {
         this.input.connect(this.fft);
         this.input.connect(this.phase);
         this.input.connect(this.vu);
+        this.gain = 0;
     }
 
     watch(source) {
@@ -26,6 +27,7 @@ export default class FullAnalyser {
     }
 
     unwatch (source) {
+        
         var index = this.connected.findIndex((e)=>e===source);
         if(index > -1) {     
             this.connected.splice(index, 1);
@@ -33,8 +35,8 @@ export default class FullAnalyser {
         }
     }
 
-    analyse() {
-        return collectData(this.analyser, this, this.context, 1)
+    analyse(gain = 1, bucketGain = []) {
+        return collectData(this.analyser, this, this.context, gain, bucketGain)
     }
 
 }
@@ -59,15 +61,23 @@ const mapFFT = (fft) => {
     return procFFT(frequencies, new Array(FFT_SIZE / 2));
 };
 
-function collectData(analyzer, analyzerElements, context, duration) {
+function collectData(analyzer, analyzerElements, context, gain, bucketGain = []) {
 
-    const { fft, vu, phase } = analyzerElements;
-    const values = analyzer.buckets.map(({ volume }) => volume.volume);
-    const time = context.currentTime;
-    //   const extras = analyzer.buckets.map(({ volume }) => {
-    //     const {hit, overage, volumeDelta } = volume;
-    //     return {hit, overage, volumeDelta};
-    //   })
+    const { fft, vu, phase, connected } = analyzerElements;
+    let time = context.currentTime;
+    if(connected && connected[0].time) {
+        time = connected[0].time;
+    }
+    let position = connected[0].position || 0.5;
 
-    return { values, time, fft: [mapFFT(fft)], volume: vu.volume, phase: phase.balance };
+    console.log(bucketGain)
+
+    const values = analyzer.buckets.map(({ volume }, i) => volume.volume * bucketGain[i]);
+
+      const extras = analyzer.buckets.map(({ volume }) => {
+        const {hit, overage, volumeDelta } = volume;
+        return {hit, overage, volumeDelta};
+      })
+
+    return { values, time, fft: [mapFFT(fft)], volume: vu.volume, phase: phase.balance, extras, time, position };
 }
