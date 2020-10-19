@@ -1,23 +1,16 @@
-import ReactDOM, { createPortal } from "react-dom";
-import React, {Component} from "react";
+import ReactDOM, { createPortal} from "react-dom";
+import React, {Component , useState } from "react";
 
 const modalRoot = document.getElementById('menu');
 
-export default class Menu extends Component {
+
+export class Portal extends Component {
   constructor(props) {
     super(props);
     this.el = document.createElement('div');
   }
 
   componentDidMount() {
-    // The portal element is inserted in the DOM tree after
-    // the Modal's children are mounted, meaning that children
-    // will be mounted on a detached DOM node. If a child
-    // component requires to be attached to the DOM tree
-    // immediately when mounted, for example to measure a
-    // DOM node, or uses 'autoFocus' in a descendant, add
-    // state to Modal and only render the children when Modal
-    // is inserted in the DOM tree.
     modalRoot.appendChild(this.el);
   }
 
@@ -31,4 +24,17 @@ export default class Menu extends Component {
       this.el
     );
   }
+}
+
+
+export default function Menu ({children, title, toggle = false}) {
+    const [open, setOpen] = useState(!toggle);
+    return <Portal>
+        {!toggle && <h2>{title}</h2>}
+        {toggle && <h2 className="toggle-title">{title} <div onClick={()=>setOpen(!open)}>{open? "X" : "Open"}</div></h2>}
+            <div class="panel">
+                
+                {open && children}
+            </div>
+        </Portal>
 }

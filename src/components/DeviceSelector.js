@@ -4,9 +4,9 @@ import { Scrollbars } from "react-custom-scrollbars";
 
 export default function DeviceSelector({ onClick, device, devices }) {
     return (
-      <div className="device-selector panel">
+      <div className="device-selector">
         <h3>{(device && device.label) || "No Input Device Selected"}</h3>
-        <Scrollbars style={{ height: "400px", width: "400px" }}>
+        <Scrollbars style={{ height: "400px" }}>
           <ul>
             {devices
               .sort((a, b) => (a.label < b.label ? -1 : 1))

@@ -4,6 +4,7 @@ import useAudioInput from "../hooks/useAudioInput";
 
 import DeviceSelector from "./DeviceSelector";
 import {AnalyserProvider} from "../hooks/analyserContext";
+import Menu from "./Menu";
 
 
 export default function AudioInput(props) {
@@ -17,11 +18,13 @@ export default function AudioInput(props) {
   
     return (
       <>
-        <DeviceSelector
-          device={device}
-          devices={devices}
-          onClick={selectDevice}
-        />
+        <Menu title="Device Select" toggle={true}>
+          <DeviceSelector
+            device={device}
+            devices={devices}
+            onClick={selectDevice}
+          />
+        </Menu>
         <AnalyserProvider {...props} source={source}>
           {props.children}
         </AnalyserProvider>

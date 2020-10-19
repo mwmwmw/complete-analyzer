@@ -24,38 +24,44 @@ const App = () => {
   const context = useContext(AudioCTX);
   const [useInput, setUseInput] = useState(false);
   const [debug, setDebug] = useState(false);
-  const menu = useRef();
 
   useEffect(() => {
     load("./config.json");
     console.log(config);
   }, [config.program]);
 
-  useLayoutEffect(()=>{
-    console.log(window.location.hash === "#debug")
-    setDebug(window.location.hash === "#debug")
+  useLayoutEffect(() => {
 
-  },[window.location.hash])
+    function updateDebug() {
+      setDebug(window.location.hash === "#debug");
+    }
+
+    window.addEventListener("hashchange", updateDebug);
+
+    return () => window.removeEventListener("hashchange", updateDebug);
+
+
+
+  }, [])
 
   if (!context) {
     return <div>wait</div>;
   }
 
   return (
-    <><Menu>
-        <div className="menu panel">
-          <div className="selector">
-            <button onClick={() => setUseInput(true)}>Input</button>
-            <button onClick={() => setUseInput(false)}>Audio File</button>
-          </div>
-        </div>
-      </Menu>
+    <><Menu title="Input Type">
+      <div className="selector">
+        <button className={useInput ? "selected" : ""} onClick={() => setUseInput(true)}>Input</button>
+        <button className={!useInput ? "selected" : ""} onClick={() => setUseInput(false)}>Audio File</button>
+      </div>
+
+    </Menu>
       {useInput ? (
-        <AudioInput config={config} menu={menu} context={context} debug={debug}>
+        <AudioInput config={config} context={context} debug={debug}>
           <Visualizer />
         </AudioInput>
       ) : (
-          <AudioFile config={config} menu={menu} context={context} debug={debug}>
+          <AudioFile config={config} context={context} debug={debug}>
             <Visualizer />
           </AudioFile>
         )}

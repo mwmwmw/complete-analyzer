@@ -6,16 +6,25 @@ export default function useAnalyser(
   context,
   source,
   analysisCallback = () => { },
-  startTime = 0,
   config
 ) {
   const analyser = useMemo(()=>new FullAnalyser(context, config), [])
   const interval = useRef();
+  const gain = useRef(config.map(v=>1));
+  const globalGain = useRef(1);
+
+  function setGain (i,  value) {
+    gain.current[i] = value;
+  }
+
+  function setGlobalGain (value) {
+    globalGain.current = value;
+  }
 
   useEffect(() => {
     const call = () => {
       analysisCallback(
-        analyser.analyse()
+        analyser.analyse(globalGain.current, gain.current)
       );
       interval.current = requestAnimationFrame(call)
     }
@@ -32,4 +41,7 @@ export default function useAnalyser(
       cancelAnimationFrame(interval.current)
     };
   }, [context, source]);
+
+  return {analyser, setGain, setGlobalGain, gain: gain.current, globalGain: globalGain.current}
+
 }
