@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 
+import MediaPlayer from "../audio/MediaPlayer";
+
 export default function (audioContext, file) {
   const context = useMemo(() => audioContext || new AudioContext(), [
     audioContext
   ]);
 
   const [playing, setPlaying] = useState(false);
-  const source = useMemo(() => context.createBufferSource(), [context, file]);
+  const source = useMemo(() => new MediaPlayer(context), [context, file]);
   const [startTime, setStartTime] = useState(0);
   const reader = useMemo(() => new FileReader(), []);
 
