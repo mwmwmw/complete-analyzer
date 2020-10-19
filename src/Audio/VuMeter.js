@@ -8,20 +8,17 @@ export default class VUMeterNode extends AudioWorkletNode {
         updateIntervalInMS
       }
     });
-    // States in AudioWorkletNode
     this._updateIntervalInMS = updateIntervalInMS;
     this._volume = 0;
     this._volumeDelta = 0;
     this._hit = 0;
     this._overage = 0;
-    // Handles updated values from AudioWorkletProcessor
     this.port.onmessage = event => {
-      if (event.data.volume) {
-        this._volume = event.data.volume;
-        this._volumeDelta = event.data.volumeDelta;
-        this._hit = event.data.hit;
-        this._overage = event.data.overage;
-      }
+        const {volume, volumeDelta, hit, overage} = event.data;
+        this._volume = volume;
+        this._volumeDelta = volumeDelta;
+        this._hit = hit;
+        this._overage = overage;
     }
     this.port.start();
   }

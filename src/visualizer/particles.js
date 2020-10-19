@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import React, { useRef, useMemo } from "react";
 import { useFrame, useThree } from "react-three-fiber";
-import "./styles.css";
 
 export default function Particles({ count, mouse }) {
   const mesh = useRef();
@@ -41,17 +40,17 @@ export default function Particles({ count, mouse }) {
       // Update the dummy object
       dummy.position.set(
         (particle.mx / 10) * a +
-          xFactor +
-          Math.cos((t / 10) * factor) +
-          (Math.sin(t * 1) * factor) / 10,
+        xFactor +
+        Math.cos((t / 10) * factor) +
+        (Math.sin(t * 1) * factor) / 10,
         (particle.my / 10) * b +
-          yFactor +
-          Math.sin((t / 10) * factor) +
-          (Math.cos(t * 2) * factor) / 10,
+        yFactor +
+        Math.sin((t / 10) * factor) +
+        (Math.cos(t * 2) * factor) / 10,
         (particle.my / 10) * b +
-          zFactor +
-          Math.cos((t / 10) * factor) +
-          (Math.sin(t * 3) * factor) / 10
+        zFactor +
+        Math.cos((t / 10) * factor) +
+        (Math.sin(t * 3) * factor) / 10
       );
       dummy.scale.set(s, s, s);
       dummy.rotation.set(s * 5, s * 5, s * 5);

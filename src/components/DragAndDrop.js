@@ -1,6 +1,6 @@
 import React from "react";
 
-const DragAndDrop = ({ children, data, change }) => {
+export default function DragAndDrop ({ children, change }) {
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -18,12 +18,6 @@ const DragAndDrop = ({ children, data, change }) => {
     e.stopPropagation();
     let files = [...e.dataTransfer.files];
 
-    // if (files && files.length > 0) {
-    //   const existingFiles = data.fileList.map((f) => f.name);
-    //   files = files.filter((f) => !existingFiles.includes(f.name));
-    //   e.dataTransfer.clearData();
-    // }
-
     change(files);
   };
 
@@ -39,4 +33,3 @@ const DragAndDrop = ({ children, data, change }) => {
     </div>
   );
 };
-export default DragAndDrop;

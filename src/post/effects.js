@@ -7,7 +7,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass";
 //import { GlitchPass } from "./post/Glitchpass";
-import { WaterPass } from "./post/Waterpass";
+import { WaterPass } from "./Waterpass";
 
 extend({
   EffectComposer,

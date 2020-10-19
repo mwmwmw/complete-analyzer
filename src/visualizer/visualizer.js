@@ -25,11 +25,11 @@ import { PlaneBufferGeometry } from "three";
 import { Refractor } from "three/examples/jsm/objects/Refractor.js";
 import { WaterRefractionShader } from "three/examples/jsm/shaders/WaterRefractionShader.js";
 
-import Effects from "./effects";
+import Effects from "../post/effects";
 
 import Particles from "./particles";
 
-import { AnalyserContext, AnalyserProvider } from "./hooks/analyserContext";
+import { useAnalyserContext } from "../hooks/analyserContext";
 
 // import { context } from "use-cannon";
 
@@ -66,6 +66,7 @@ const polarRandom = (scale = 1, offset = 0.25) => {
 };
 const scaleMax = 5;
 const Sculpture = (props) => {
+
   const group = useRef();
   const cubes = useMemo(() => {
     return new Array(150).fill(0).map((v) => {
@@ -102,21 +103,37 @@ const Sculpture = (props) => {
       {/* <Refract position={[0, 0, 3]} />
       <Refract position={[0, 0.5, 4]} />
       <Refract position={[0, -0.5, 6]} rotation={[0, 1, 0]} /> */}
-      <pointLight position={[0, 0, 0]} intensity={5} color="#e08e23" />
+      <pointLight position={[0, 0, 0]} intensity={props.intensity} color="#e08e23" />
       {/* <pointLight position={[-5, 0, -5]} /> */}
       {cubes}
       <mesh>
         <boxBufferGeometry args={[2, 2, 2]} attach="geometry" />
         <meshBasicMaterial
-          color="#e08e23"
+          color={"#e08e23"}
           roughness={0.2}
           attach="material"
-          opacity={0.3}
+          opacity={props.intensity/4}
+          transparent={true}
         />
       </mesh>
     </group>
   );
 };
+
+
+function Lighting ({analysis}) {
+  const { values, time, volume, phase } = analysis;
+  const [low, mid, high] = values;
+    return <group>
+        <ambientLight color={sceneColor} intensity={Math.floor(Math.pow((1 + high), 50))} />
+        <pointLight
+          color={sceneColor}
+          position={[0, 2, 5]}
+          intensity={Math.floor(Math.pow((1 + high), 50))}
+        />
+    </group>
+}
+
 
 function Camera(props) {
   const camera = useRef();
@@ -143,7 +160,7 @@ function Camera(props) {
       <perspectiveCamera
         name="CustomCamera"
         ref={camera}
-        // position={[0, 0, 10]}
+      // position={[0, 0, 10]}
       />
     </group>
   );
@@ -154,7 +171,8 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const sceneColor = new Color("#030310");
 
 const Visualizer = () => {
-  const { values } = useContext(AnalyserContext);
+  const analysis = useAnalyserContext();
+  const { values, time, volume, phase } = analysis;
   const [low, mid, high] = values;
   const mouse = useRef([0, 0]);
   const onMouseMove = useCallback(
@@ -169,18 +187,12 @@ const Visualizer = () => {
         pixelRatio={Math.min(2, isMobile ? window.devicePixelRatio : 1)}
         onMouseMove={onMouseMove}
         onCreated={({ gl }) => {
-          //  gl.toneMapping = THREE.Uncharted2ToneMapping;
-          gl.setClearColor(new Color("#020208"));
+          gl.setClearColor(new Color("#030305"));
         }}
       >
         <Camera />
-        <ambientLight color={sceneColor} intensity={Math.floor(Math.pow(Math.exp(high),550))} />
-        <pointLight
-          color={sceneColor}
-          position={[0, 2, 5]}
-          intensity={high * low * 1000}
-        />
-        <Sculpture scale={[Math.pow(2, low), Math.pow(2, low), Math.pow(2, low)]} />
+        <Lighting analysis={analysis} />
+        <Sculpture scale={[Math.pow(3, mid), Math.pow(3, mid), Math.pow(3, mid)]} intensity={low*10}/>
         <Particles count={2000} mouse={mouse} />
         <Effects />
       </Canvas>
