@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 
 import {
   Color
@@ -8,7 +8,7 @@ import { Canvas } from "react-three-fiber";
 
 import { useAnalyserContext } from "../hooks/analyserContext";
 
-import Idea1 from "./Idea1";
+//import Idea1 from "./Idea1";
 import TitleShow from "./TitleShow";
 
 
