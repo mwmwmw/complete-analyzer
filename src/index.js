@@ -23,26 +23,11 @@ const App = () => {
   const { load, config } = useContext(ConfigContext);
   const context = useContext(AudioCTX);
   const [useInput, setUseInput] = useState(false);
-  const [debug, setDebug] = useState(false);
 
   useEffect(() => {
     load("./config.json");
     console.log(config);
   }, [config.program]);
-
-  useLayoutEffect(() => {
-
-    function updateDebug() {
-      setDebug(window.location.hash === "#debug");
-    }
-
-    window.addEventListener("hashchange", updateDebug);
-
-    return () => window.removeEventListener("hashchange", updateDebug);
-
-
-
-  }, [])
 
   if (!context) {
     return <div>wait</div>;
@@ -54,14 +39,13 @@ const App = () => {
         <button className={useInput ? "selected" : ""} onClick={() => setUseInput(true)}>Input</button>
         <button className={!useInput ? "selected" : ""} onClick={() => setUseInput(false)}>Audio File</button>
       </div>
-
     </Menu>
       {useInput ? (
-        <AudioInput config={config} context={context} debug={debug}>
+        <AudioInput config={config} context={context}>
           <Visualizer />
         </AudioInput>
       ) : (
-          <AudioFile config={config} context={context} debug={debug}>
+          <AudioFile config={config} context={context}>
             <Visualizer />
           </AudioFile>
         )}

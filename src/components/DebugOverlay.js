@@ -27,33 +27,52 @@ const FFT = ({ values, color, name }) => (
 
 export default function DebugOverlay({ active }) {
   const values = useAnalyserContext();
- 
+
+  if(!active) {
+    return <div>Not Active</div>
+  }
+
   return (
     active && (
       <div className="overlay">
         <div>
-          <h2>Volume</h2>
+          <h3>Volume</h3>
           <div
-                style={{
-                  height: `10px`,
-                  width: `${values.volume * 200}px`,
-                  backgroundColor: "rgba(255,255,255, 0.5)"
-                }}
-              ></div>
+            style={{
+              height: `10px`,
+              width: `${values.volume * 200}px`,
+              backgroundColor: "rgba(255,255,255, 0.5)"
+            }}
+          ></div>
+          <h3>Volume Delta</h3>
+          <div
+            style={{
+              height: `10px`,
+              width: `${values.volumeDelta * 200}px`,
+              backgroundColor: "rgba(255,255,255, 0.5)"
+            }}
+          ></div>
+          <h3>HIT</h3>
+          <div
+            style={{
+              height: `10px`,
+              backgroundColor: values.hit ? "rgba(244,0,0,1)" : "rgba(255,255,255, 0.5)"
+            }}
+          ></div>
         </div>
         <div style={
-          {position: "relative"}
+          { position: "relative" }
         }>
-          <h2>Phase</h2>
+          <h3>Phase</h3>
           <div>
-        {values.phase &&
-                values.phase.map((v,i) => (
-                  <div
+            {values.phase &&
+              values.phase.map((v, i) => (
+                <div
                   style={{
                     position: "absolute",
                     top: 0,
                     left: 0,
-                    transform: `translate(${i*4}px) translateY(${v*4}px)`,
+                    transform: `translate(${i * 4}px) translateY(${v * 4}px)`,
                     height: `4px`,
                     width: `4px`,
                     marginLeft: "-2px",
@@ -61,24 +80,41 @@ export default function DebugOverlay({ active }) {
                     backgroundColor: "rgba(255,255,255, 0.5)"
                   }}
                 ></div>
-                ))}
+              ))}
           </div>
         </div>
         <div>
-          <h2>Buckets</h2>
+          <h3>Buckets</h3>
           {values &&
-            values.values.map((v) => (
+            values.values.map((v, i) => (<>
               <div
                 style={{
                   height: `10px`,
-                  width: `${v * 200}px`,
+                  width: `${v.volume * 200}px`,
                   backgroundColor: "rgba(255,255,255, 0.5)"
                 }}
               ></div>
-            ))}
+              <h3>Volume Delta</h3>
+              <div
+                style={{
+                  height: `10px`,
+                  width: `${values.extras[i].volumeDelta * 200}px`,
+                  backgroundColor: "rgba(255,255,255, 0.5)"
+                }}
+              ></div>
+              <h3>Volume Delta</h3>
+              <div
+                style={{
+                  height: `10px`,
+                  backgroundColor: values.extras[i].hit ? "rgba(244,0,0,1)" : "rgba(255,255,255, 0.5)"
+                }}
+              ></div>
+              <hr /></>
+            ))
+          }
         </div>
         <div>
-          <h2>FFT</h2>
+          <h3>FFT</h3>
           <div className="ffts">
             {values &&
               values.fft.map((arr, i) => (

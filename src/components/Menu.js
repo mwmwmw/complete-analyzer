@@ -30,7 +30,7 @@ export class Portal extends Component {
 export default function Menu ({children, title, toggle = false}) {
     const [open, setOpen] = useState(!toggle);
     return <Portal>
-        {!toggle && <h2>{title}</h2>}
+        {!toggle && title && <h2>{title}</h2>}
         {toggle && <h2 className="toggle-title">{title} <div onClick={()=>setOpen(!open)}>{open? "X" : "Open"}</div></h2>}
             <div class="panel">
                 
