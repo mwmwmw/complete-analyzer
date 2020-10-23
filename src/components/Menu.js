@@ -1,5 +1,5 @@
-import ReactDOM, { createPortal} from "react-dom";
-import React, {Component , useState } from "react";
+import ReactDOM, { createPortal } from "react-dom";
+import React, { Component, useState } from "react";
 
 const modalRoot = document.getElementById('menu');
 
@@ -27,14 +27,13 @@ export class Portal extends Component {
 }
 
 
-export default function Menu ({children, title, toggle = false}) {
-    const [open, setOpen] = useState(!toggle);
-    return <Portal>
-        {!toggle && title && <h2>{title}</h2>}
-        {toggle && <h2 className="toggle-title">{title} <div onClick={()=>setOpen(!open)}>{open? "X" : "Open"}</div></h2>}
-            <div class="panel">
-                
-                {open && children}
-            </div>
-        </Portal>
+export default function Menu({ children, title, toggle = false }) {
+  const [open, setOpen] = useState(!toggle);
+  return <Portal>
+    {!toggle && title && <h2>{title}</h2>}
+    {toggle && <h2 className="toggle-title">{title} <div onClick={() => setOpen(!open)}>{open ? "X" : "Open"}</div></h2>}
+    <div className="panel">
+      {open && children}
+    </div>
+  </Portal>
 }
