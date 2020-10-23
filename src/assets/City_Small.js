@@ -7,12 +7,13 @@ import { useGLTF } from '@react-three/drei/useGLTF'
 export default function City(props) {
   const group = useRef()
   const { nodes, materials } = useGLTF('/City_Small.glb')
+  const {analysis} = props;
   return (
     <group ref={group} {...props}>
       <mesh
         material={materials['Material.003']}
         geometry={nodes.Explode.geometry}
-        position={[0, -500, 0]}
+        position={[0, -500+analysis.values[0]*700, 0]}
         rotation={[0, 0, 0]}
         scale={[800, 800,800]}
       />

@@ -2,9 +2,7 @@ import ReactDOM from "react-dom";
 import React, {
   useState,
   useEffect,
-  useContext,
-  useRef,
-  useLayoutEffect
+  useContext
 } from "react";
 
 import "./styles.css";
@@ -34,12 +32,13 @@ const App = () => {
   }
 
   return (
-    <><Menu title="Input Type">
-      <div className="selector">
-        <button className={useInput ? "selected" : ""} onClick={() => setUseInput(true)}>Input</button>
-        <button className={!useInput ? "selected" : ""} onClick={() => setUseInput(false)}>Audio File</button>
-      </div>
-    </Menu>
+    <>
+      <Menu title="Input Type">
+        <div className="selector">
+          <button className={useInput ? "selected" : ""} onClick={() => setUseInput(true)}>Input</button>
+          <button className={!useInput ? "selected" : ""} onClick={() => setUseInput(false)}>Audio File</button>
+        </div>
+      </Menu>
       {useInput ? (
         <AudioInput config={config} context={context}>
           <Visualizer />

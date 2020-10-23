@@ -5,8 +5,12 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei/useGLTF'
 
 export default function Model(props) {
+  const {analysis} = props;
   const group = useRef()
   const { nodes, materials } = useGLTF('/LightShowTitle.glb')
+
+  materials['Material.001'].emissiveIntensity = 1-(analysis.volume*2);
+
   return (
     <group ref={group} {...props}>
       <group rotation={[Math.PI / 2, 0, 0]}>

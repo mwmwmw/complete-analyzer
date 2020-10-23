@@ -28,14 +28,14 @@ const FFT = ({ values, color, name }) => (
 export default function DebugOverlay({ active }) {
   const values = useAnalyserContext();
 
-  if(!active) {
+  if (!active) {
     return <div>Not Active</div>
   }
 
   return (
     active && (
       <div className="overlay">
-        <div>
+        <div className="signalbox">
           <h3>Volume</h3>
           <div
             style={{
@@ -53,13 +53,8 @@ export default function DebugOverlay({ active }) {
             }}
           ></div>
           <h3>HIT</h3>
-          <div
-            style={{
-              height: `10px`,
-              backgroundColor: values.hit ? "rgba(244,0,0,1)" : "rgba(255,255,255, 0.5)"
-            }}
-          ></div>
-        </div>
+          <div className="HIT">{values.hit ? "HIT" : " _ "}</div>
+       
         <div style={
           { position: "relative" }
         }>
@@ -82,34 +77,32 @@ export default function DebugOverlay({ active }) {
                 ></div>
               ))}
           </div>
+          </div>
         </div>
         <div>
           <h3>Buckets</h3>
           {values &&
             values.values.map((v, i) => (<>
-              <div
-                style={{
-                  height: `10px`,
-                  width: `${v.volume * 200}px`,
-                  backgroundColor: "rgba(255,255,255, 0.5)"
-                }}
-              ></div>
-              <h3>Volume Delta</h3>
-              <div
-                style={{
-                  height: `10px`,
-                  width: `${values.extras[i].volumeDelta * 200}px`,
-                  backgroundColor: "rgba(255,255,255, 0.5)"
-                }}
-              ></div>
-              <h3>Volume Delta</h3>
-              <div
-                style={{
-                  height: `10px`,
-                  backgroundColor: values.extras[i].hit ? "rgba(244,0,0,1)" : "rgba(255,255,255, 0.5)"
-                }}
-              ></div>
-              <hr /></>
+              <div className="signalbox">
+                <h3>Volume</h3>
+                <div
+                  style={{
+                    height: `10px`,
+                    width: `${v * 200}px`,
+                    backgroundColor: "rgba(255,255,255, 0.5)"
+                  }}
+                ></div>
+                <h3>Volume Delta</h3>
+                <div
+                  style={{
+                    height: `10px`,
+                    width: `${values.extras[i].volumeDelta * 200}px`,
+                    backgroundColor: "rgba(255,255,255, 0.5)"
+                  }}
+                ></div>
+                <h3>Volume Hit</h3>
+                <div className="HIT">{values.extras[i].hit ? "HIT" : " _ "}</div>
+              </div></>
             ))
           }
         </div>
