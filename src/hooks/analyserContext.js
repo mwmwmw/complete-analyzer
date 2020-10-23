@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import useAnalyser from "./useAnalyser";
 
 import DebugOverlay from "../components/DebugOverlay";
@@ -17,9 +17,8 @@ function AnalyserProvider({
   config,
   startTime = 0,
   children,
-  debug
 }) {
-
+  const [debug, setDebug] = useState(false);
   const { setGain, setGlobalGain, gain, globalGain } = useAnalyser(
     context,
     source,
@@ -38,20 +37,24 @@ function AnalyserProvider({
 
   return (
     <AnalyserContext.Provider value={analysis}>
+      <Menu title="Signal Debugger" toggle={true}>
+          <button onClick={()=>setDebug(!debug)}>{debug ? "Deactivate" : "Activate"} Debug</button>
+         <DebugOverlay active={debug} />
+      </Menu>
       <Menu title="Boost" toggle={true}>
-        {config.buckets.map((v, i)=>{
+        {config.buckets.map((v, i) => {
           return <div key={i.toString()}>
-          <h3>Enhance Range {v.filter.type} - {v.filter.frequency}</h3>
-        <h3>{gain[i]}x</h3>
-          <input type="range" value={gain[i]} default={1} step={0.01} min={-10} max={10} onChange={({currentTarget})=>setGain(i, parseFloat(currentTarget.value,10))} />
-          <button onClick={()=>setGain(i, 1)}>Reset</button>
+            <h3>Enhance Range {v.filter.type} - {v.filter.frequency}</h3>
+            <h3>{gain[i]}x</h3>
+            <input type="range" value={gain[i]} default={1} step={0.01} min={-10} max={10} onChange={({ currentTarget }) => setGain(i, parseFloat(currentTarget.value, 10))} />
+            <button onClick={() => setGain(i, 1)}>Reset</button>
+            <hr />
           </div>
         })}
-          <h3>Enhance Volume</h3>
-          <input type="range" value={globalGain} default={1} step={0.01} min={-10} max={10} onChange={({currentTarget})=>setGlobalGain(parseFloat(currentTarget.value,10))} />
-          <button onClick={()=>setGlobalGain(1)}>Reset</button>
+        <h3>Enhance Volume</h3>
+        <input type="range" value={globalGain} default={1} step={0.01} min={-10} max={10} onChange={({ currentTarget }) => setGlobalGain(parseFloat(currentTarget.value, 10))} />
+        <button onClick={() => setGlobalGain(1)}>Reset</button>
       </Menu>
-      <DebugOverlay active={debug} />
       {children}
     </AnalyserContext.Provider>
   );
@@ -59,7 +62,7 @@ function AnalyserProvider({
 
 function useAnalyserContext() {
   const analysis = useContext(AnalyserContext);
-  return {...analysis};
+  return { ...analysis };
 }
 
 
