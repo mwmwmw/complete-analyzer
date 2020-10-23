@@ -16,7 +16,7 @@ registerProcessor('vumeter', class extends AudioWorkletProcessor {
             automationRate: 'k-rate'
         }, {
             name: 'smooth',
-            defaultValue: 0.99,
+            defaultValue: 0.996,
             minValue: 0,
             maxValue: 1,
             automationRate: 'k-rate'
