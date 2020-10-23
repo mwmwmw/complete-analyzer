@@ -53,14 +53,15 @@ registerProcessor('vumeter', class extends AudioWorkletProcessor {
             // Update and sync the volume property with the main thread.
             this._nextUpdateFrame -= inputs[0][0].length;
             if (this._nextUpdateFrame < 0) {
+                const delta = this._volume - this._lastVolume;
                 this._nextUpdateFrame += this.intervalInFrames;
                 this.pack.volume = this._volume;
-                this.pack.volumeDelta = this._volume - this._lastVolume;
-                this.pack.hit = this._volume > parameters['threshold'][0] && this._volume - this._lastVolume > parameters['sensitivity'][0];
-                this.pack.overage = Math.max(0, this._volume - parameters['threshold'][0]);
+                this.pack.volumeDelta = delta;
+                this.pack.hit = delta > parameters['sensitivity'][0];
                 this.port.postMessage(this.pack);
+                this._lastVolume = this._volume;
             }
-            this._lastVolume = this._volume;
+            
         }
         // Keep on processing if the volume is above a threshold, so that
         // disconnecting inputs does not immediately cause the meter to stop
