@@ -12,33 +12,12 @@ const DEFAULT_CONFIG = [
       Q: 3,
       type: "lowpass"
     },
-    compressor: {
-      threshold: -60,
-      knee: 1,
-      ratio: 10,
-      attack: 0.005,
-      release: 0.005
-    }
   },
   {
     filter: { frequency: 1000, Q: 2, type: "bandpass" },
-    compressor: {
-      threshold: -60,
-      knee: 1,
-      ratio: 10,
-      attack: 0.01,
-      release: 0.01
-    }
   },
   {
     filter: { frequency: 8000, Q: 4, type: "highpass" },
-    compressor: {
-      threshold: -60,
-      knee: 1,
-      ratio: 10,
-      attack: 0.01,
-      release: 0.01
-    }
   }
 ];
 
@@ -65,7 +44,7 @@ function verify(obj) {
 
 function verifyBuckets(buckets) {
   const verified = buckets.reduce((a, b) => {
-    return a && b["filter"] && b["compressor"];
+    return a && b["filter"];
   }, true);
   if (!verified) {
     throw new Error("Buckets Invalid");
