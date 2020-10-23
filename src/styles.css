@@ -109,6 +109,10 @@ audio,
   color: white;
 }
 
+.signalbox {
+  padding: 5%;
+}
+
 input {
   width: 100%;
   display: block;
