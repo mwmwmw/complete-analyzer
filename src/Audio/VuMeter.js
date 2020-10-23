@@ -42,5 +42,16 @@ export default class VUMeterNode extends AudioWorkletNode {
     this._updateIntervalInMS = updateIntervalInMS;
     this.port.postMessage({ updateIntervalInMS: updateIntervalInMS });
   }
+  set sensitivity(value) {
+    const sense = this.parameters.get('sensitivity');
+    sense.setValueAtTime(value, this.context.currentTime)
+  }
+
+  set smooth(value) {
+    const sense = this.parameters.get('smooth');
+    sense.setValueAtTime(value, this.context.currentTime)
+  }
+
+
 
 };

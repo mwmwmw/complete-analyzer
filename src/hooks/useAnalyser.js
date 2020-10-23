@@ -12,6 +12,7 @@ export default function useAnalyser(
   const interval = useRef();
   const gain = useRef(config.map(v=>1));
   const globalGain = useRef(1);
+  const sensitivity = useRef(0.996);
 
   function setGain (i,  value) {
     gain.current[i] = value;
@@ -21,10 +22,14 @@ export default function useAnalyser(
     globalGain.current = value;
   }
 
+  function setSensitivity(value) {
+    sensitivity.current = value;
+  }
+
   useEffect(() => {
     const call = () => {
       analysisCallback(
-        analyser.analyse(globalGain.current, gain.current)
+        analyser.analyse(globalGain.current, gain.current, sensitivity.current)
       );
       interval.current = requestAnimationFrame(call)
     }
@@ -42,6 +47,6 @@ export default function useAnalyser(
     };
   }, [context, source]);
 
-  return {analyser, setGain, setGlobalGain, gain: gain.current, globalGain: globalGain.current}
+  return {analyser, setGain, setGlobalGain, setSensitivity, sensitivity: sensitivity.current, gain: gain.current, globalGain: globalGain.current}
 
 }

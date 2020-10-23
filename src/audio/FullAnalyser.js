@@ -35,8 +35,22 @@ export default class FullAnalyser {
         }
     }
 
-    analyse(gain = 1, bucketGain = []) {
+    analyse(gain = 1, bucketGain = [], sensitivity = 0.996) {
+        this.setSmooth(sensitivity)
         return collectData(this.analyser, this, this.context, gain, bucketGain)
+    }
+
+    setSensitivity(value) {
+        this.vu.sensitivity = value;
+        this.analyser.buckets.forEach(({volume})=>{
+            volume.sensitivity = value;
+        })  
+    }
+    setSmooth(value) {
+        this.vu.smooth = value;
+        this.analyser.buckets.forEach(({volume})=>{
+            volume.smooth = value;
+        })  
     }
 
 }
