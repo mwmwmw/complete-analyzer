@@ -11,10 +11,10 @@ export default function AudioInput(props) {
     const [device, setDevice] = useState();
     const { source, devices, getDevice } = useAudioInput(props.context);
   
-    const selectDevice = useCallback((d) => {
+    function selectDevice (d) {
       setDevice(d);
       getDevice(d);
-    });
+    }
   
     return (
       <>
